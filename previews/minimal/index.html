@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>aryadi · Ruang keluarga</title>
+  <link rel="icon" type="image/svg+xml" href="assets/aryadi.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="stage">
+    <div id="wallpaper" aria-hidden="true"></div><div class="shade" aria-hidden="true"></div>
+    <header>
+      <div class="brand"><img class="brand-logo" src="assets/aryadi.svg" alt=""><span class="brand-name">aryadi</span><span class="divider"></span><span class="home-label">RUANG KELUARGA</span></div>
+      <nav aria-label="Pintasan">
+        <button class="utility" id="inputs"><span class="symbol" style="background-image:url(assets/hdmi.png)"></span>Input</button>
+        <button class="utility" id="wallpaper-button"><span class="symbol" style="background-image:url(assets/sparkles.png)"></span>Tema</button>
+        <button class="utility icon-only" id="settings" aria-label="Pengaturan"><span class="symbol" style="background-image:url(assets/settings.png)"></span></button>
+      </nav>
+    </header>
+    <section class="clock-block" aria-label="Waktu">
+      <div class="eyebrow" id="greeting">SELAMAT MALAM</div>
+      <time id="clock">21:39</time>
+      <div id="date"></div>
+      <p class="family-note">Petualangan seru dimulai di rumah.</p>
+    </section>
+    <section class="favorites" aria-label="Aplikasi favorit">
+      <div class="section-heading"><div class="shelf-actions"><button id="all-apps"><span class="apps-grid" aria-hidden="true">▦</span> Semua aplikasi</button><button id="edit-favorites">Atur favorit</button></div></div>
+      <div id="apps" role="group" aria-label="Aplikasi favorit"></div>
+    </section>
+    <div id="overlay" hidden>
+      <section id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+        <div class="dialog-top"><div><div class="eyebrow">BERANDA ANDA</div><h2 id="dialog-title"></h2></div><button id="close-dialog" aria-label="Tutup">×</button></div>
+        <div id="dialog-content"></div>
+        <div class="dialog-foot">Pilihan disimpan di browser ini. <span>Esc untuk kembali</span></div>
+      </section>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </main>
+  <script src="theme-schedule.js"></script>
+  <script src="tv.js"></script>
+  <script src="tv-apps.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -41,3 +41,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: tools/check.sh web
+
+  aryadi:
+    name: Aryadi webOS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: node --test webos/aryadi/root/launcher.test.cjs previews/minimal/*.test.cjs
+      - run: python3 webos/build_aryadi.py
+      - name: ES5 compatibility
+        run: |
+          for f in previews/minimal/*.js webos/aryadi/root/*.js; do
+            npx --yes acorn@8.14.0 --ecma5 --silent "$f"
+          done

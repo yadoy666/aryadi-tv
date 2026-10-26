@@ -57,15 +57,9 @@ def ar(members):
     return out.getvalue()
 
 
-def build(preview, config):
-    with open(os.path.join(ROOT, 'webos', 'appinfo.json'), encoding='utf-8') as f:
-        info = json.load(f)
+def package(app, info, destination):
+    """Pack an explicit set of web assets; shared by the stock and Aryadi builds."""
     app_id, version = info['id'], info['version']
-    app = webapp.files(config, 'webos/build.py')
-    for name in ('appinfo.json', 'icon.png', 'largeIcon.png'):
-        with open(os.path.join(ROOT, 'webos', name), 'rb') as f:
-            app[name] = f.read()
-
     base = 'usr/palm/applications/' + app_id
     entries = [('usr', None), ('usr/palm', None), ('usr/palm/applications', None), (base, None)]
     dirs = set()
@@ -85,8 +79,22 @@ def build(preview, config):
                'webOS-Package-Format-Version: 2\nwebOS-Packager-Version: 1.0.0\n' % (app_id, version, size))
     data = ar([('debian-binary', b'2.0\n'), ('control.tar.gz', tar_gz([('control', control.encode('utf-8'))])),
                ('data.tar.gz', tar_gz(entries))])
-    with open(IPK, 'wb') as f:
+    with open(destination, 'wb') as f:
         f.write(data)
+
+    return data
+
+
+def build(preview, config):
+    with open(os.path.join(ROOT, 'webos', 'appinfo.json'), encoding='utf-8') as f:
+        info = json.load(f)
+    app_id, version = info['id'], info['version']
+    app = webapp.files(config, 'webos/build.py')
+    for name in ('appinfo.json', 'icon.png', 'largeIcon.png'):
+        with open(os.path.join(ROOT, 'webos', name), 'rb') as f:
+            app[name] = f.read()
+
+    data = package(app, info, IPK)
 
     if preview:
         webapp.preview(app, OUT)

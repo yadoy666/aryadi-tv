@@ -1,0 +1,3 @@
+#!/bin/sh
+# Return immediately: never hold up Homebrew startup or its failsafe reset.
+/var/lib/aryadi-launcher/control.sh start

@@ -25,10 +25,13 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IPK = os.path.join(ROOT, 'FreeMyTV-webos.ipk')
+APP_NAME = 'Free My TV'
 with open(os.path.join(ROOT, 'webos', 'appinfo.json'), encoding='utf-8') as f:
     APP_ID = json.load(f)['id']
 TEMP = '/media/developer/temp/freemytv.ipk'
-SSH_OPTS = ['-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=' + os.devnull, '-o', 'LogLevel=ERROR',
+SSH_OPTS = ['-o', 'StrictHostKeyChecking=accept-new',
+            '-o', 'UserKnownHostsFile=' + os.path.expanduser('~/.ssh/freemytv_webos_known_hosts'),
+            '-o', 'IdentitiesOnly=yes', '-o', 'ConnectTimeout=5', '-o', 'LogLevel=ERROR',
             '-o', 'HostKeyAlgorithms=+ssh-rsa', '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa', '-p', '9922']
 
 
@@ -120,13 +123,16 @@ def main():
     print('Installing ...')
     out = luna(ip, key, 'luna://com.webos.appInstallService/dev/install', {'id': APP_ID, 'ipkUrl': TEMP, 'subscribe': True},
                replies=30, wait=60)
-    if '"state":"installed"' not in out:
+    if not re.search(r'"state"\s*:\s*"installed"', out):
         sys.exit('The TV didn\'t finish installing. It said:\n' + out.strip())
     ssh(ip, key, 'rm -f ' + TEMP)
-    luna(ip, key, 'luna://com.webos.applicationManager/launch', {'id': APP_ID})
+    launched = luna(ip, key, 'luna://com.webos.applicationManager/launch', {'id': APP_ID})
+    if not re.search(r'"returnValue"\s*:\s*true', launched):
+        print('Installed, but automatic launch was not confirmed. Open %s from LG Home.' % APP_NAME)
+        return
     print('Installed and open on the TV.')
-    print('Tip: while Free My TV is open, hold a number key on the remote to open it with that key from anywhere.')
-    print('Developer Mode lasts about 40 days: open the Developer Mode app now and then and press EXTEND.')
+    print('Tip: while %s is open, hold a number key on the remote to open it with that key from anywhere.' % APP_NAME)
+    print('Developer Mode has a session limit: check Remain Session and press EXTEND before it expires.')
 
 
 if __name__ == '__main__':

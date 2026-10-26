@@ -18,6 +18,8 @@ concurrency:
 
 jobs:
   deploy:
+    # This inherited site belongs to upstream; do not publish it from Aryadi.
+    if: github.repository == 'simbasjungles/free-my-tv'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
